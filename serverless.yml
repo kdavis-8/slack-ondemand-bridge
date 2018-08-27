@@ -4,7 +4,7 @@ service: slack-ondemand-bridge
 provider:
   name: aws
 #  region: us-west-2
-#  runtime: nodejs4.3
+  runtime: nodejs4.3
   memorySize: 256
   timeout: 10
   stage: dev
@@ -15,8 +15,19 @@ provider:
 
 functions:
   main:
+    name: SlackOndemandBridge
+    description: Create OnDemand Bridge for alerts from messages sent to a channel
+    handler: main.handler
+    events:
+      - http: POST slack-to-opsgenie-alert-create
+
+service: slack-to-opsgenie-alert-creator
+
+
+functions:
+  main:
     name: SlackToOpsGenieAlertCreator
     description: Creates alert for messages sent to a channel
     handler: main.handler
     events:
-      - http: POST slack-to-opsgenie-alert-create
+      - http: POST slack-ondemand-bridge
