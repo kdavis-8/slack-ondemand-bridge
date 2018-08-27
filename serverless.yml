@@ -19,15 +19,4 @@ functions:
     description: Create OnDemand Bridge for alerts from messages sent to a channel
     handler: main.handler
     events:
-      - http: POST slack-to-opsgenie-alert-create
-
-service: slack-to-opsgenie-alert-creator
-
-
-functions:
-  main:
-    name: SlackToOpsGenieAlertCreator
-    description: Creates alert for messages sent to a channel
-    handler: main.handler
-    events:
       - http: POST slack-ondemand-bridge
