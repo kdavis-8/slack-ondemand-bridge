@@ -1,44 +1,22 @@
-/**
-    * @author Kevin Davis - using Serhat's create alert example
-    * @version 08/27/18
-    * @updated v1.0 8/27/18
-    */
-'use strict';
 
-const opsgenie = require('opsgenie-sdk');
-const qs = require('querystring');
+service: slack-ondemand-bridge
 
-exports.handler = function (event, context, callback) {
+provider:
+  name: aws
+#  region: us-west-2
+#  runtime: nodejs4.3
+  memorySize: 256
+  timeout: 10
+  stage: dev
+#  profile: customProfile
+  environment:
+      slackToken: yourSlackToken
+      opsgenieApiKey: yourOpsGenieApiKey
 
-    const slackToken = process.env.slackToken;
-    const params = qs.parse(event.body);
-
-    // token check to make sure that requests come from Slack
-    if (params.token !== slackToken) {
-        console.error(`Request token (${params.token}) does not match expected`);
-        return callback('Invalid request token');
-    }
-
-    const opsgenieApiKey = process.env.opsgenieApiKey;
-
-    opsgenie.configure({
-        'api_key': opsgenieApiKey
-    });
-
-    var create_alert_json = {
-        message: params.text
-        description: 'OnDemand Conference bridge from Lambda function in slack',
-        entity: "OnDemand Conference Bridge",
-        teams: [ { name: 'AddTeamName Here' } ] . # This needs to be updated with your team
-    };
-
-    opsgenie.alertV2.create(create_alert_json, function (error, alert) {
-        if (!error) {
-            console.log("Alert creating response is a success!", alert);
-            callback(null, "successful");
-        } else {
-            console.log("Error while trying to create an alert", error);
-            callback(error);
-        }
-    });
-};
+functions:
+  main:
+    name: SlackToOpsGenieAlertCreator
+    description: Creates alert for messages sent to a channel
+    handler: main.handler
+    events:
+      - http: POST slack-to-opsgenie-alert-create
