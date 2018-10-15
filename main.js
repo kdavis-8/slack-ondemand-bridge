@@ -1,7 +1,7 @@
 /**
     * @author Kevin Davis
     * @version 08/27/18
-    * @updated v1.0 08/27/18
+    * @updated v1.0 8/27/18
     */
 'use strict';
 
@@ -27,13 +27,8 @@ exports.handler = function (event, context, callback) {
 
     var create_alert_json = {
         message: params.text,
-        entity: "OnDemand Conference Bridge",
-        responders: [
-            {
-            type: "team",
-            name: "DGC"
-        }
-        ]
+        description: 'OnDemand Conference bridge from Lambda function in slack',
+        entity: "OnDemand Conference Bridge"
     };
 
     opsgenie.alertV2.create(create_alert_json, function (error, alert) {
